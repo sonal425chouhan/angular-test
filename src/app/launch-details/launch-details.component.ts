@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { Component, ChangeDetectionStrategy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { map, switchMap } from "rxjs/operators";
 import { LaunchDetailsGQL } from "../services/spacexGraphql.service";
+import { LaunchFacadeService } from "./../services/launch-facade.service";
 
 @Component({
   selector: "app-launch-details",
@@ -9,15 +10,27 @@ import { LaunchDetailsGQL } from "../services/spacexGraphql.service";
   styleUrls: ["./launch-details.component.css"],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LaunchDetailsComponent {
+export class LaunchDetailsComponent implements OnInit {
+  slideConfig = {"slidesToShow": 4, "slidesToScroll": 1, 'focusOnSelect': true};
+  currentSlideIndex = 0;
+  id;
+  launchDetails$;
+
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly launchDetailsService: LaunchDetailsGQL
+    private readonly launchDetailsService: LaunchDetailsGQL,
+    private readonly launchFacade: LaunchFacadeService
   ) {}
 
-  launchDetails$ = this.route.paramMap.pipe(
-    map(params => params.get("id") as string),
-    switchMap(id => this.launchDetailsService.fetch({ id })),
-    map(res => res.data.launch)
-  );
+
+
+  ngOnInit() {
+    this.id = this.route.snapshot.paramMap.get('id');
+    this.launchDetails$ = this.launchFacade.pastLaunchDetailStoreCache(this.id);
+  }
+
+
+  afterChange(e) {
+    this.currentSlideIndex = e.currentSlide;
+  }
 }

@@ -1,29 +1,45 @@
 <ng-container *ngIf="launchDetails$ | async as launchDetails">
-  <section style="padding-top: 20px;">
-    <mat-card style="width: 400px; margin: auto;">
-      <mat-card-header>
-        <mat-card-title>{{ launchDetails.mission_name }}</mat-card-title>
-      </mat-card-header>
-      <img
-        height="256"
-        width="256"
-        mat-card-image
-        [src]="launchDetails.links.mission_patch"
-        alt="Mission patch of {{ launchDetails.mission_name }}"
+  <div class="row" *ngIf="launchDetails.links">
+    <section class="section-left">
+      <h2>
+        <a [routerLink]="'/'">
+          <img src="./assets/arrow-black.svg" />
+        </a>
+        {{ launchDetails.mission_name }}
+      </h2>
+      <mat-card style="width: 400px;">
+        <mat-card-header>
+          <mat-card-title>
+            <img
+            height="256"
+            width="256"
+            mat-card-image
+            [src]="launchDetails.links.mission_patch || '../../../../assets/no-image.png'"
+            alt="Mission patch of {{ launchDetails.mission_name }}"
+            />
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{ launchDetails.details }}</p>
+        </mat-card-content>
+      </mat-card>
+    </section>
+    <section class="privew-img">
+      <img class="privew-img-in"
+        [src]="launchDetails.links.flickr_images[currentSlideIndex] || '../../../../assets/no-image.png'"
+        alt="Picture of {{ launchDetails.mission_name }}"
+        loading="lazy"
       />
-      <mat-card-content>
-        <p>{{ launchDetails.details }}</p>
-      </mat-card-content>
-    </mat-card>
-  </section>
-  <section class="photo-grid">
-    <img
-      *ngFor="let pic of launchDetails.links.flickr_images"
-      [src]="pic"
-      alt="Picture of {{ launchDetails.mission_name }}"
-      height="300"
-      width="300"
-      loading="lazy"
-    />
-  </section>
+      <section class="photo-grid">
+        <ngx-slick-carousel class="carousel"
+          #slickodal="slick-carousel"
+          [config]="slideConfig"
+          (afterChange)="afterChange($event)">
+          <div ngxSlickItem *ngFor="let slide of launchDetails.links.flickr_images" class="slide" (click)="afterChange($event)">
+            <img [src]="slide || '../../../../assets/no-image.png'" alt="">
+          </div>
+        </ngx-slick-carousel>
+      </section>
+    </section>
+  </div>
 </ng-container>

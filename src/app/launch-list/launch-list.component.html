@@ -11,24 +11,26 @@
             width="50"
             mat-card-avatar
             loading="lazy"
-            [src]="launch.links.mission_patch_small"
+            [src]="launch.links.mission_patch_small || '../../../../assets/no-image.png'"
             alt="Mission patch of {{ launch.mission_name }}"
           />
           <mat-card-title>{{ launch.mission_name }}</mat-card-title>
           <mat-card-subtitle
             >{{ launch.rocket.rocket_name }} - launched
-            {{ launch.launch_date_utc }}</mat-card-subtitle
+            {{ launch.launch_date_utc  | relativeTime}}</mat-card-subtitle
           >
+          <mat-spinner [diameter]="30"></mat-spinner>
         </mat-card-header>
         <img
           height="300"
           width="300"
           mat-card-image
           loading="lazy"
-          [src]="launch.links.flickr_images[0]"
+          [src]="launch.links.flickr_images[0] || '../../../../assets/no-image.png'"
           alt="Photo of {{ launch.mission_name }}"
         />
       </mat-card>
+
     </section>
   </main>
 </ng-container>
